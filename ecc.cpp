@@ -66,7 +66,7 @@ struct Point {
         if (t.inf ) return Point<s>(*this);
         int lambda;
         if (x == t.x) {
-            if ((y +t.y)%s.p) return Point<s>(); // inf case
+            if ((y +t.y)%s.p==0) return Point<s>(); // inf case
             else { //double
                 int nom  = 3*x*x + s.a;
                 int den =  2*y;

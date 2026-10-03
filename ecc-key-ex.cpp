@@ -10,6 +10,12 @@ int mod(int a) {
     return a%p;
 }
 
+struct Point {
+    int x,y;
+    bool inf;
+
+}
+
 int main () {
 
 }

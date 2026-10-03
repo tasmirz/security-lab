@@ -526,6 +526,7 @@ return R
 #### Resolved Fixes
 - [x] **[`ecc.cpp`](file:///extra/Projects/Security/ecc.cpp):** Scalar multiplication exponent loop fixed from `t--` to `t >>= 1`.
 - [x] **[`ecc.cpp`](file:///extra/Projects/Security/ecc.cpp):** `Space::operator()` updated from floating-point `sqrt` to finite field search $y^2 \equiv (x^3 + ax + b) \pmod p$.
+- [x] **[`ecc.cpp`](file:///extra/Projects/Security/ecc.cpp):** Inverted infinity condition corrected to `if ((y + t.y) % s.p == 0) return Point<s>();`.
 - [x] **[`al-jamal.cpp`](file:///extra/Projects/Security/al-jamal.cpp):** Extended Euclidean parameter order fixed from `b%a` to `a%b`.
 - [x] **[`el-gamal-re.cpp`](file:///extra/Projects/Security/el-gamal-re.cpp):** Re-randomization exponent changed from `k` to fresh randomness `k_` for computing `c1_` and `c2_`.
 
@@ -533,7 +534,6 @@ return R
 
 | File | Location | Issue | Required Fix |
 | :--- | :--- | :--- | :--- |
-| [`ecc.cpp`](file:///extra/Projects/Security/ecc.cpp) | L66 | **Inverted infinity check:** `if ((y + t.y) % s.p)` is true when non-zero. Point doubling $2y \not\equiv 0$ returns $\mathcal{O}$ instead of doubling! | Change to `if ((y + t.y) % s.p == 0) return Point<s>();`. |
 | [`ecc.cpp`](file:///extra/Projects/Security/ecc.cpp) | L14-15 | **Negative RHS in `operator()`:** If $x^3 + ax + b < 0$, `rhs % p` is negative in C++. | Wrap with `rhs = (rhs % p + p) % p;`. |
 | [`ecc.cpp`](file:///extra/Projects/Security/ecc.cpp) | L55-56, L74-75 | **Negative coordinates:** `x3` and `y3` can be negative before modulo. `Point` constructor uses `% s.p` which preserves negative sign. | Use `mod(x, s.p)` and `mod(y, s.p)`. |
 | [`ecc.cpp`](file:///extra/Projects/Security/ecc.cpp) | L106 | **Composite modulus in test:** $p = 9$ is composite; Fermat's inverse $a^{p-2}$ fails in `modinv`. | Test with prime $p$ (e.g. $p = 17, a = 1, b = 2$). |
