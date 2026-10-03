@@ -125,7 +125,7 @@ $$
 ### Primitive Root / Generator Testing
 
 $$
-g \text{ is primitive root modulo } p \iff \operatorname{ord}_p(g) = p - 1
+g \text{ is primitive root modulo } p \iff \mathrm{ord}_p(g) = p - 1
 $$
 
 $$
@@ -347,7 +347,7 @@ $$
 
 $$
 \begin{aligned}
-\text{Domain:} \quad & E(\mathbb{F}_p), \quad G \text{ (Base Point)}, \quad n = \operatorname{ord}(G) \\
+\text{Domain:} \quad & E(\mathbb{F}_p), \quad G \text{ (Base Point)}, \quad n = \mathrm{ord}(G) \\
 \text{Alice:} \quad & d_A \in [1, n-1] \quad (\text{Private}), \quad Q_A = d_A G \quad (\text{Public}) \\
 \text{Bob:} \quad & d_B \in [1, n-1] \quad (\text{Private}), \quad Q_B = d_B G \quad (\text{Public}) \\
 \text{Shared Secret:} \quad & K = d_A Q_B = d_A(d_B G) = d_B(d_A G) = d_B Q_A
