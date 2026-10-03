@@ -49,7 +49,7 @@
 | [`el-gamal-re.cpp`](file:///extra/Projects/Security/el-gamal-re.cpp) | ElGamal Ciphertext Re-randomization / Re-encryption | Proxy Cryptography |
 | [`al-jamal.cpp`](file:///extra/Projects/Security/al-jamal.cpp) | Scratchpad / Historical Extended GCD & Discrete Log | Scratchpad |
 | [`ecc.cpp`](file:///extra/Projects/Security/ecc.cpp) | Elliptic Curve Group Operations (Point Add, Double, Multiply) | Asymmetric (ECDLP) |
-| [`ecc-key-ex.cpp`](file:///extra/Projects/Security/ecc-key-ex.cpp) | Elliptic Curve Key Exchange (ECDH) | Asymmetric (Incomplete / In-progress) |
+| [`ecc-key-ex.cpp`](file:///extra/Projects/Security/ecc-key-ex.cpp) | Elliptic Curve Diffie-Hellman Key Exchange (ECDH) | Asymmetric Key Exchange (ECDLP) |
 
 ---
 
@@ -524,6 +524,8 @@ return R
 ### Implementation Status & Audit
 
 #### Resolved Fixes
+- [x] **[`ecc-key-ex.cpp`](file:///extra/Projects/Security/ecc-key-ex.cpp):** Implemented Elliptic Curve Diffie-Hellman Key Exchange (ECDH).
+- [x] **[`ecc.cpp`](file:///extra/Projects/Security/ecc.cpp):** Added `den == 0` guard to return point at infinity $\mathcal{O}$ in point doubling.
 - [x] **[`ecc.cpp`](file:///extra/Projects/Security/ecc.cpp):** Scalar multiplication exponent loop fixed from `t--` to `t >>= 1`.
 - [x] **[`ecc.cpp`](file:///extra/Projects/Security/ecc.cpp):** `Space::operator()` updated from floating-point `sqrt` to finite field search $y^2 \equiv (x^3 + ax + b) \pmod p$.
 - [x] **[`ecc.cpp`](file:///extra/Projects/Security/ecc.cpp):** Inverted infinity condition corrected to `if ((y + t.y) % s.p == 0) return Point<s>();`.
@@ -534,12 +536,13 @@ return R
 
 | File | Location | Issue | Required Fix |
 | :--- | :--- | :--- | :--- |
+| [`ecc-key-ex.cpp`](file:///extra/Projects/Security/ecc-key-ex.cpp) | L84 | **Variable shadowing / uninitialized variable:** `for (int x=0; ...)` shadows outer `x`, leaving outer `x` uninitialized when used in `Point g = Point(x, y);`. | Change loop header to `for (x = 0; x < p; x++)`. |
+| [`ecc-key-ex.cpp`](file:///extra/Projects/Security/ecc-key-ex.cpp) | L81 | **Discriminant formula typo:** `4 * a_ * a_` ($4a^2$) should be $4a^3$ and checked modulo $p$. | Change to `assert(mod(4 * a_ * a_ * a_ + 27 * b_ * b_) != 0);`. |
 | [`ecc.cpp`](file:///extra/Projects/Security/ecc.cpp) | L14-15 | **Negative RHS in `operator()`:** If $x^3 + ax + b < 0$, `rhs % p` is negative in C++. | Wrap with `rhs = (rhs % p + p) % p;`. |
 | [`ecc.cpp`](file:///extra/Projects/Security/ecc.cpp) | L55-56, L74-75 | **Negative coordinates:** `x3` and `y3` can be negative before modulo. `Point` constructor uses `% s.p` which preserves negative sign. | Use `mod(x, s.p)` and `mod(y, s.p)`. |
 | [`ecc.cpp`](file:///extra/Projects/Security/ecc.cpp) | L106 | **Composite modulus in test:** $p = 9$ is composite; Fermat's inverse $a^{p-2}$ fails in `modinv`. | Test with prime $p$ (e.g. $p = 17, a = 1, b = 2$). |
 | [`el-gamal-re.cpp`](file:///extra/Projects/Security/el-gamal-re.cpp) | L78 | **Decryption target:** `dec_` decrypts `c2` and `c1` instead of `c2_` and `c1_`. | Change to `mod_mul(c2_, mod_inv(mod_pow(c1_, a, p), p), p)`. |
 | [`al-jamal.cpp`](file:///extra/Projects/Security/al-jamal.cpp) | L79-80 | **Missing return statement:** `extended_gcd` does not return `g` on the recursive branch. | Add `return g;`. |
-| [`ecc-key-ex.cpp`](file:///extra/Projects/Security/ecc-key-ex.cpp) | Whole file | **Incomplete file:** File contains only 10 lines (stub). | Implement ECDH key exchange ($Q_A = d_A G, Q_B = d_B G, K = d_A Q_B = d_B Q_A$). |
 | [`ceaser.cpp`](file:///extra/Projects/Security/ceaser.cpp) | L19-23 | Negative modulo underflow if shift key $k > 26$: `26 + (c - 'a' - k)` can remain negative. | Use `((c - 'a' - k) % 26 + 26) % 26`. |
 
 ---
@@ -555,9 +558,8 @@ Compared to standard university Network Security / Cryptography curricula (e.g.,
 - **Transposition Ciphers:** Rail Fence Cipher, Columnar / Row Transposition.
 
 #### 2. Key Exchange & Public Key Schemes Still Missing
-- **Diffie-Hellman Key Exchange (DHKE):** Alice & Bob exchange $g^a \bmod p$ and $g^b \bmod p$ to derive shared key $K = g^{ab} \bmod p$.
-- **Full ECC Schemes:** `ecc.cpp` has point addition/doubling, but lacks:
-  - ECDH (Elliptic Curve Diffie-Hellman).
+- **Diffie-Hellman Key Exchange (DHKE):** Alice & Bob exchange $g^a \bmod p$ and $g^b \bmod p$ over finite fields $\mathbb{Z}_p^*$ to derive shared key $K = g^{ab} \bmod p$.
+- **Advanced ECC Schemes:** `ecc.cpp` has point arithmetic and [`ecc-key-ex.cpp`](file:///extra/Projects/Security/ecc-key-ex.cpp) implements ECDH, but the following are still missing:
   - EC-ElGamal (Encryption & Decryption using point masking).
   - ECDSA (Elliptic Curve Digital Signature Algorithm).
 - **Paillier Cryptosystem:** Additively homomorphic cryptosystem ($D(c_1 \cdot c_2 \bmod n^2) = m_1 + m_2 \bmod n$), commonly taught alongside ElGamal multiplicative homomorphism.

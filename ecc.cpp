@@ -70,6 +70,7 @@ struct Point {
             else { //double
                 int nom  = 3*x*x + s.a;
                 int den =  2*y;
+                if (den==0) return Point<s>();
                 lambda = mod_div(nom, den, s.p);
             }
         } else {
