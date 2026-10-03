@@ -2,7 +2,7 @@
 #include <sys/ucontext.h>
 using namespace std;
 
-
+// KEPT FOR HISTORICAL PURPOSES
 /*
  *
  * a^16 base*=base,  a^2

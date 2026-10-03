@@ -54,7 +54,6 @@ int find_g (int p) {
         for (int j=1;j<p;j++) {
             mp[j]=mod_pow(i, j, p);
         }
-        cout<<mp.size()<<endl;
         if (mp.size()==p-1) { return i;}
     }
     assert(false);
@@ -65,15 +64,20 @@ signed main () {
     int g  = find_g(p);
     int a = 11;
     int y =  mod_pow(g, a, p);
-    int m = 100;
+    int m = 10;
     int k = rand()%p;
-    while (__gcd(k,p-1)!=1) k = rand()%p; // IMP
     int c1  = mod_pow(g,k,p); // g^k %p
-    int c2 =  mod_mul( // k^-1 (m-a*c_1) % p-1
-        mod_inv(k,p-1),
-        mod(m - mod_mul(a,c1,p-1),p-1),
-        p-1);
-    int lhs = mod_mul(mod_pow(y,c1,p),mod_pow(c1,c2, p),p); // y^c1 * c1^ c2 %p
-    int rhs = mod_pow(g,m,p); // g ^ m % p
-    assert(lhs==rhs);
+    int c2 =  mod_mul(m,mod_pow(y, k,p),p); // c2 =  m*y^k mod p
+
+
+    int m_ = 2;
+    int k_ = rand()%p;
+    int c1_  = mod_pow(g,k_,p); // g^k %p
+    int c2_ =  mod_mul(m_,mod_pow(y, k_,p),p); // c2 =  m*y^k mod p
+
+    int c1f =  mod_mul(c1,c1_,p);
+    int c2f =  mod_mul(c2,c2_,p);
+
+    int d = mod_mul(mod_inv(mod_pow(c1f,a,p),p),c2f,p);
+    assert(d == m*m_);
 };
