@@ -67,6 +67,11 @@ Point add(Point a, Point b) {
   return Point(x3, y3);
 }
 
+Point sub(Point a, Point b) {
+    b.y = mod(-b.y);
+    return add(a,b);
+}
+
 Point mul(Point a, int e) {
   Point res = Point();
   while (e) {
@@ -80,24 +85,26 @@ Point mul(Point a, int e) {
 
 signed main() {
     assert(4 * a_ * a_* a_ + 27 * b_ * b_ != 0);
-    int x,y;
+    int x,yy;
     for (x=0;x<p;x++) {
-        y = eval(x);
-        if (y!=-1) break;
+        yy = eval(x);
+        if (yy!=-1) break;
     }
-    assert(y!=-1);
-    Point g = Point(x,y);
+    assert(yy!=-1);
+    Point g = Point(x,yy);
     int a = 2;
-    int b = 3;
+    Point y = mul(g,a);
 
-    Point ag = mul(g,a);
-    Point bg = mul(g,b);
+    Point m = Point(2,2);
+    int k=3;
+    Point c1 =mul(g,k);
+    Point c2 = add(m, mul(y,k));
 
-    Point agb = mul(ag,b);
-    Point bga = mul(bg,a);
-
-    assert(agb.inf == bga.inf);
-    assert(agb.x == bga.x);
-    assert(agb.y == bga.y);
-
+    Point dec = sub(c2,mul(c1,a)); // c2 - c1*a
+    assert(m.x == dec.x);
+    assert(m.y == dec.y);
+    assert(m.inf == dec.inf);
+    cout<<m.x<<endl;
+    cout<<m.y<<endl;
+    cout<<m.inf<<endl;
 }
