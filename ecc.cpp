@@ -11,7 +11,13 @@ struct Space {
         assert(4*a*a*a + 27*b*b != 0);
     }
     int operator()(int x) {
-        return x*x*x + a*x + b;
+        int rhs = (x*x*x + a*x + b )%p;
+        for (int y=0;y<p;y++) {
+            if (y*y%p == rhs) {
+                return y;
+            }
+        }
+        assert(false);
     }
 };
 
@@ -60,7 +66,7 @@ struct Point {
         if (t.inf ) return Point<s>(*this);
         int lambda;
         if (x == t.x) {
-            if (y == -t.y) return Point<s>(); // inf case
+            if ((y +t.y)%s.p) return Point<s>(); // inf case
             else { //double
                 int nom  = 3*x*x + s.a;
                 int den =  2*y;
@@ -82,7 +88,7 @@ struct Point {
         while (t) {
             if (t & 1) res = res+d;
             d = d+d;
-            t--;
+            t>>=1;
         }
         return res;
     }

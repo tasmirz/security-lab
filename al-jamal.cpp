@@ -74,7 +74,7 @@ int bigmod(int base, int exponent, int modulus) {
 int extended_gcd(int a, int b, int &x, int &y) {
     if (b==0) return x=1,y=0,a; // x,y comes from the previousline gcd(gcd,0) = gcd*1+0 equivalent to ax+by=gcd(a,b)
     int x1,y1;
-    extended_gcd(b,b%a,x1,y1);
+    extended_gcd(b,a%b,x1,y1);
     x=y1;
     y=x1 - a/b*y1 ;
 }

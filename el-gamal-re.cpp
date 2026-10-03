@@ -71,11 +71,11 @@ signed main () {
     int c2 =  mod_mul(m,mod_pow(y, k,p),p); // c2 =  m*y^k mod p
 
     int k_ = rand()%p;
-    int c1_ = mod_mul(c1,mod_pow(g,k,p),p);  // c1_ =  c1 * g^k mod p
-    int c2_ =  mod_mul(c2,mod_pow(y, k,p),p); // c2 =  m*y^k mod p
+    int c1_ = mod_mul(c1,mod_pow(g,k_,p),p);  // c1_ =  c1 * g^k mod p
+    int c2_ =  mod_mul(c2,mod_pow(y, k_,p),p); // c2 =  m*y^k mod p
 
     int dec = mod_mul(c2,mod_inv(mod_pow(c1, a,p),p),p); // dec = c2/(c1^a) mod p
-    int dec_ = mod_mul(c2,mod_inv(mod_pow(c1, a,p),p),p); // dec = c2/(c1^a) mod p
+    int dec_ = mod_mul(c2_,mod_inv(mod_pow(c1_, a,p),p),p); // dec = c2/(c1^a) mod p
 
     assert(dec == dec_);
     assert(m%p == dec_);
