@@ -65,7 +65,7 @@ signed main () {
     int g  = find_g(p);
     int a = 11;
     int y =  mod_pow(g, a, p);
-    int m = 100;
+    int m = 100%p;
     int k = rand()%p;
     int c1  = mod_pow(g,k,p); // g^k %p
     int c2 =  mod_mul(m,mod_pow(y, k,p),p); // c2 =  m*y^k mod p
@@ -78,8 +78,8 @@ signed main () {
     int dec_ = mod_mul(c2_,mod_inv(mod_pow(c1_, a,p),p),p); // dec = c2/(c1^a) mod p
 
     assert(dec == dec_);
-    assert(m%p == dec_);
+    assert(m == dec_);
 
-    cout<<m%p<<endl;
+    cout<<m<<endl;
     cout<<dec_<<endl;
 };
